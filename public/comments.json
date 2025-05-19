@@ -9,9 +9,9 @@
     {
       "id": 1,
       "parentId": null,
-      "content": "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
-      "createdAt": "2022-04-10T13:49:51.141Z",
-      "score": 13,
+      "content": "Incredible implementation! The use of Signals in Angular and hooks in React really shows you’re keeping up with the latest best practices. Your state management is clean, and your component structure is easy to follow. 👏",
+      "createdAt": "2024-05-10T13:49:51.141Z",
+      "score": 19,
       "user": {
         "image": {
           "png": "images/avatars/leiaskywalker.png"
@@ -19,14 +19,14 @@
         "username": "leiaskywalker"
       },
       "replies": [],
-      "body": "Chillax, my Padawans. Much to learn, you have. The fundamentals of HTML, CSS, and JS,  I'd recommend focusing on. It's very tempting to jump ahead but lay a solid foundation first. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stays constant.ijhnjlnlkm."
+      "body": "Chillax, my Padawans. Much to learn, you have. Focus, you must, on the fundamentals: signals, composability, unidirectional data flow. Excited, I am, to see you use Suspense and SSR! Modern tools, yes, but remember—the basics endure. May your code be maintainable, readable, and tested."
     },
     {
       "id": 2,
       "parentId": null,
-      "content": "Woah, your project looks awesome! How long have you been coding for? I'm still new, but think I want to dive into Angular as well soon. Perhaps you can give me an insight on where I can learn Angular? Thanks!",
-      "createdAt": "2022-05-14T13:49:51.141Z",
-      "score": 11,
+      "content": "Super cool! How do you decide between React and Angular for a project nowadays? I’m still learning, but Signals look powerful. Any tips on where to get started with state management in modern apps?",
+      "createdAt": "2024-05-12T15:21:31.141Z",
+      "score": 14,
       "user": {
         "image": {
           "png": "images/avatars/lukeskywalker.png"
@@ -38,9 +38,9 @@
     {
       "id": 3,
       "parentId": 2,
-      "content": "If you're looking to kick start your career, search no further. React is all you need. Welcome to the Dark Side.",
-      "createdAt": "2022-06-01T13:49:51.141Z",
-      "score": 5,
+      "content": "Dark side or light, all that matters is efficient, maintainable code. React 19’s Server Components make SSR and client hydration seamless. Angular’s Signals change the game for reactivity. Choose what suits your team and business goals.",
+      "createdAt": "2024-05-13T17:03:22.141Z",
+      "score": 8,
       "replyingTo": "lukeskywalker",
       "user": {
         "image": {
@@ -52,9 +52,9 @@
     {
       "id": 4,
       "parentId": 2,
-      "content": "Chillax, my Padawans. Much to learn, you have. The fundamentals of HTML, CSS, and JS,  I'd recommend focusing on. It's very tempting to jump ahead but lay a solid foundation first. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stays constant.",
-      "createdAt": "2022-06-02T13:49:51.141Z",
-      "score": 2,
+      "content": "Modern, your tools may be. Core concepts, unchanged remain: separation of concerns, state flows one way, code reviews help you grow. Frameworks evolve, fundamentals are forever. Hooks, signals, server rendering—master them, you must. Collaborate and share knowledge you should.",
+      "createdAt": "2025-05-04T18:01:00.000Z",
+      "score": 10,
       "replyingTo": "vader",
       "user": {
         "image": {

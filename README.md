@@ -7,7 +7,10 @@ A modern, threaded comment and reply system built with **React 19 + TypeScript**
 ## 🚀 Features
 - ✅ Add top-level comments
 - 💬 Reply to any comment (nested threading)
-- 👤 Current user support via React Context
+- 👤 Authenticated current user support via React Context
+- 🔐 Only current user can edit or delete their own comments
+- ✏️ Edit & 🗑️ Delete functionality (with permission checks)
+- 📊 Score voting system (if added)
 - 📁 Local JSON as mock backend
 - 🖼️ Avatars, timestamps, and basic styling
 - ⚛️ Clean, reusable architecture
@@ -26,7 +29,7 @@ A modern, threaded comment and reply system built with **React 19 + TypeScript**
 ## 🧪 Local Development
 
 ```bash
-git clone https://github.com/<your-username>/interactive-comments-react.git
+git clone https://github.com/qambershah/interactive-comments-react.git
 cd interactive-comments-react
 npm install
 npm run dev
@@ -36,7 +39,7 @@ npm run dev
 
 ## 🌍 Live Demo
 
-[🔗 View on GitHub Pages](https://<your-username>.github.io/interactive-comments-react/)
+[🔗 Live Demo on GitHub Pages](https://qambershah.github.io/interactive-comments-react/)
 
 ---
 

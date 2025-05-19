@@ -6,8 +6,7 @@ import { CommentForm } from './components/CommentForm'
 import { CommentList } from './components/CommentList'
 
 function App() {
-  const { comments, addComment, loading, error } = useComments();
-
+  const { comments, addComment, updateComment, deleteComment, voteComment, loading, error } = useComments();
 
   return (
     <main style={{ maxWidth: 600, margin: '2rem auto', padding: '0 1rem' }}>
@@ -27,7 +26,13 @@ function App() {
       {loading && <p>Loading comments...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <CommentList comments={comments} onReply={addComment} />
+      <CommentList
+        comments={comments}
+        onReply={addComment}
+        onEdit={updateComment}
+        onDelete={deleteComment}
+        onVote={voteComment}
+      />
     </main>
   )
 }

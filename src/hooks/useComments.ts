@@ -21,7 +21,7 @@ export const useComments = () => {
           ...c,
           replies: c.replies ?? [],
         }));
-        setComments(normalised);
+        setComments(sortByScore(normalised));
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -38,21 +38,60 @@ export const useComments = () => {
 
   // Add a new comment
   const addComment = (newComment: Comment) => {
-    setComments(prev => [...prev, newComment]);
+    setComments(prev => sortByScore([...prev, newComment]));
   };
 
   // Update a comment
   const updateComment = (id: number, updatedContent: string) => {
-    setComments(prev =>
-      prev.map(comment =>
-        comment.id === id ? { ...comment, content: updatedContent } : comment
-      )
-    );
+    const updateRecursive = (comments: Comment[]): Comment[] => {
+      return comments.map(comment => {
+        if (comment.id === id) {
+          return { ...comment, content: updatedContent };
+        }
+
+        return {
+          ...comment,
+          replies: comment.replies ? updateRecursive(comment.replies) : [],
+        };
+      });
+    };
+
+    setComments(prev => sortByScore(updateRecursive(prev)));
   };
 
-  // Delete a comment
+  const deleteRecursive = (comments: Comment[], id: number): Comment[] => {
+    return comments
+      .filter(comment => comment.id !== id)
+      .map(comment => ({
+        ...comment,
+        replies: deleteRecursive(comment.replies ?? [], id),
+      }));
+  };
+
   const deleteComment = (id: number) => {
-    setComments(prev => prev.filter(comment => comment.id !== id));
+    setComments(prev => sortByScore(deleteRecursive(prev, id)));
+  };
+
+  const sortByScore = (comments: Comment[]): Comment[] => {
+    return comments
+      .map(comment => ({
+        ...comment,
+        replies: sortByScore(comment.replies ?? []),
+      }))
+      .sort((a, b) => b.score - a.score);
+  };
+
+  const voteComment = (id: number, delta: number) => {
+    const voteRecursive = (comments: Comment[]): Comment[] => {
+      return comments.map(comment => {
+        if (comment.id === id) {
+          return { ...comment, score: comment.score + delta };
+        }
+        return { ...comment, replies: voteRecursive(comment.replies ?? []) };
+      });
+    };
+
+    setComments(prev => sortByScore(voteRecursive(prev)));
   };
 
   return {
@@ -62,5 +101,6 @@ export const useComments = () => {
     addComment,
     updateComment,
     deleteComment,
+    voteComment
   };
 };
