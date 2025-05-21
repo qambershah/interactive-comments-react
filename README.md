@@ -1,39 +1,57 @@
-# 💬 Interactive Comments App
+# 💬 Interactive Comments – Full-Stack Serverless App (React + .NET + AWS)
 
-A modern, threaded comment and reply system built with **React 19 + TypeScript**.
+A modern threaded comment system:
 
----
-
-## 🚀 Features
-- ✅ Add top-level comments
-- 💬 Reply to any comment (nested threading)
-- 👤 Authenticated current user support via React Context
-- 🔐 Only current user can edit or delete their own comments
-- ✏️ Edit & 🗑️ Delete functionality (with permission checks)
-- 📊 Score voting system (if added)
-- 📁 Local JSON as mock backend
-- 🖼️ Avatars, timestamps, and basic styling
-- ⚛️ Clean, reusable architecture
+* **Frontend** – React 19 + TypeScript (Vite) — hosted on **GitHub Pages**  
+* **Backend** – .NET 8 REST API running on **AWS Lambda** behind **API Gateway**  
+* **Infra** – Deployed with the .NET Lambda CLI + API‑key Usage Plan for rate‑limiting
 
 ---
 
-## 🔧 Tech Stack
-- [React 19 (w/ modern JSX)](https://react.dev)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev) for fast dev + build
-- [GitHub Actions](https://github.com/features/actions) for deployment
-- GitHub Pages (static hosting)
+## 🚀 Features
+
+| Area | Details |
+|------|---------|
+| 📝 Comments | Add, reply (nested), edit, delete (auth‑guarded to current user) |
+| 📊 Voting    | Up‑vote / down‑vote, list auto‑sorted by score |
+| 🔑 Protection | API key + API Gateway usage‑plan throttling (burst 5 rps / 1000 req‑day) |
+| 🗄️ Persistence | In‑memory seed from `Seed/comments.json` (persists while Lambda is warm) |
+| 🌐 CORS | Cross‑origin allowed for `https://qambershah.github.io` |
+| 🛡️ XSS Safe | Comment body sanitised server‑side with `HtmlEncoder` |
+| 📜 OpenAPI | Swagger UI available locally at `/swagger` |
+| ⚙️ CI/CD | React auto-deploys to GitHub Pages via Actions; Lambda deployed via CLI (CI/CD pending) |
 
 ---
 
-## 🧪 Local Development
+## 🔧 Tech Stack
+
+| Layer    | Tech |
+|----------|------|
+| Frontend | React 19 • TypeScript • Vite |
+| Backend  | .NET 8 Minimal API |
+| Cloud    | AWS Lambda • API Gateway (REST API) • IAM |
+| Dev Tools| AWS Lambda .NET CLI • GitHub Actions |
+
+---
+
+## 🧑‍💻 Local Development
 
 ```bash
+# clone
 git clone https://github.com/qambershah/interactive-comments-react.git
 cd interactive-comments-react
+
+# 1️⃣ Frontend
+cp .env   # then set variables
 npm install
-npm run dev
+npm run dev                  # Vite dev server
+
+# 2️⃣ Backend (.NET 8)
+cd api/InteractiveCommentsApi
+dotnet run                   # runs on http://localhost:5000
 ```
+
+> **ENV** – Frontend reads `VITE_API_URL` & `VITE_API_KEY` from `.env`.
 
 ---
 
@@ -51,20 +69,6 @@ Ensure `vite.config.ts` has:
 ```ts
 base: '/interactive-comments-react/'
 ```
-
----
-
-## 📁 Project Structure
-
-```
-src/
-├── components/         // Reusable components like CommentItem, CommentForm
-├── contexts/           // Current user context (provider + hook)
-├── hooks/              // useComments hook for state and fetching
-├── types/              // TypeScript types (Comment, User)
-└── App.tsx             // App root
-```
-
 ---
 
 ## 📝 License

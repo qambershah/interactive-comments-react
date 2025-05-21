@@ -24,9 +24,7 @@ export function CommentForm({ onAdd, parentId = null }: Props) {
       score: 0,
       user: {
         username: user.username,
-        image: {
-          png: user.image
-        }
+        image: user.image
       },
       replies: [],
     };

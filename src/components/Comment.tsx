@@ -22,7 +22,7 @@ export function CommentItem({ comment, depth = 0, onReply }: Props) {
       }}
     >
       <img
-        src={comment.user.image.png}
+        src={comment.user.image}
         alt={`${comment.user.username}'s avatar`}
         style={{ width: 36, height: 36, borderRadius: '50%' }}
       />

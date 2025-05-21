@@ -1,0 +1,15 @@
+{
+  "resource": "/",
+  "path": "/",
+  "httpMethod": "GET",
+  "headers": {},
+  "multiValueHeaders": {},
+  "queryStringParameters": {},
+  "multiValueQueryStringParameters": {},
+  "requestContext": {
+    "httpMethod": "GET",
+    "path": "/"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

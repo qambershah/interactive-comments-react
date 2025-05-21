@@ -9,6 +9,17 @@ lerna-debug.log*
 
 node_modules
 dist
+
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.vspscc
+*.vssscc
+*.suo
+*.userosscache
+*.sln.docstates
+
 dist-ssr
 *.local
 .vite

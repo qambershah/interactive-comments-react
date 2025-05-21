@@ -46,7 +46,7 @@ export function CommentItem({
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
         <div style={{ position: 'relative', marginRight: 12 }}>
           <img
-            src={comment.user.image.png}
+            src={comment.user.image}
             alt={comment.user.username}
             style={{
               width: 40,

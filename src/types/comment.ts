@@ -7,9 +7,7 @@ export interface Comment {
   replyingTo?: string;
   user: {
     username: string;
-    image: {
-      png: string;
-    };
+    image: string;
   };
   replies: Comment[];
 }

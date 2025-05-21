@@ -1,5 +1,7 @@
 import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import typescriptLogo from '/typescript.png'
+import dotnetLogo from '/dotnet_logo.png'
+import awsLogo from '/aws_logo.png'
 import './App.css'
 import { useComments } from './hooks/useComments'
 import { CommentForm } from './components/CommentForm'
@@ -9,16 +11,22 @@ function App() {
   const { comments, addComment, updateComment, deleteComment, voteComment, loading, error } = useComments();
 
   return (
-    <main style={{ maxWidth: 600, margin: '2rem auto', padding: '0 1rem' }}>
-    <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
+    <main style={{ maxWidth: 640, margin: '2rem auto', padding: '0 1rem' }}>
+      <div>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
+        <a href="https://www.typescriptlang.org/" target="_blank">
+          <img src={typescriptLogo} className="logo typescript" alt="Typescript logo" />
+        </a>
+        <a href="https://dotnet.microsoft.com/en-us/" target="_blank">
+          <img src={dotnetLogo} className="logo dotnet" alt=".NET logo" />
+        </a>
+        <a href="https://aws.amazon.com/" target="_blank">
+          <img src={awsLogo} className="logo aws" alt="AWS logo" />
+        </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>React + TS + .NET + AWS</h1>
       <h1>💬 Interactive Comments</h1>
 
       <CommentForm onAdd={addComment} />
