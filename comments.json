@@ -1,8 +1,6 @@
 {
   "currentUser": {
-    "image": {
-      "png": "images/avatars/yoda.png"
-    },
+    "image": "images/avatars/yoda.png",
     "username": "yoda"
   },
   "comments": [
@@ -13,9 +11,7 @@
       "createdAt": "2024-05-10T13:49:51.141Z",
       "score": 19,
       "user": {
-        "image": {
-          "png": "images/avatars/leiaskywalker.png"
-        },
+        "image":  "images/avatars/leiaskywalker.png",
         "username": "leiaskywalker"
       },
       "replies": [],
@@ -28,9 +24,7 @@
       "createdAt": "2024-05-12T15:21:31.141Z",
       "score": 14,
       "user": {
-        "image": {
-          "png": "images/avatars/lukeskywalker.png"
-        },
+        "image": "images/avatars/lukeskywalker.png",
         "username": "lukeskywalker"
       },
       "replies": []
@@ -43,9 +37,7 @@
       "score": 8,
       "replyingTo": "lukeskywalker",
       "user": {
-        "image": {
-          "png": "images/avatars/vader.png"
-        },
+        "image": "images/avatars/vader.png",
         "username": "vader"
       }
     },
@@ -57,9 +49,7 @@
       "score": 10,
       "replyingTo": "vader",
       "user": {
-        "image": {
-          "png": "images/avatars/yoda.png"
-        },
+        "image": "images/avatars/yoda.png",
         "username": "yoda"
       }
     }
