@@ -31,6 +31,37 @@ describe('comment state updates', () => {
     expect(result.map(item => item.content)).toEqual(['New comment']);
   });
 
+  it('updates a vote score without changing a root comment position', () => {
+    const comments = [
+      { ...comment(1, null, 'Top'), score: 8 },
+      { ...comment(2, null, 'Next'), score: 6 },
+      { ...comment(3, null, 'Voted'), score: 5 },
+    ];
+    const updated = { ...comments[2]!, score: 9 };
+
+    const result = replaceComment(comments, updated);
+
+    expect(result.map(item => item.id)).toEqual([1, 2, 3]);
+    expect(result.map(item => item.score)).toEqual([8, 6, 9]);
+  });
+
+  it('updates a reply score without moving it or changing parent order', () => {
+    const comments = [
+      { ...comment(1, null, 'Parent'), score: 10, replies: [
+        { ...comment(2, 1, 'Lower reply'), score: 2 },
+        { ...comment(3, 1, 'Higher reply'), score: 4 },
+      ] },
+      { ...comment(4, null, 'Other parent'), score: 8 },
+    ];
+    const updatedReply = { ...comments[0]!.replies[0]!, score: 12 };
+
+    const result = replaceComment(comments, updatedReply);
+
+    expect(result.map(item => item.id)).toEqual([1, 4]);
+    expect(result[0]?.replies.map(item => item.id)).toEqual([2, 3]);
+    expect(result[0]?.replies.map(item => item.score)).toEqual([12, 4]);
+  });
+
   it('removes a comment and all descendants without changing the original collection', () => {
     const comments = [
       comment(1, null, 'Parent'),
