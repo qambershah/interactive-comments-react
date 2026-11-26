@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveCommentsApi", "InteractiveCommentsApi\InteractiveCommentsApi.csproj", "{FD224F8B-0FE8-4716-8B97-01F1D5C1EF93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D4C17907-0BEF-46C3-8A21-660811B87E7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveCommentsApi.Tests", "test\InteractiveCommentsApi.Tests\InteractiveCommentsApi.Tests.csproj", "{53FB47D8-C133-4FA9-9742-812775A5A239}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD224F8B-0FE8-4716-8B97-01F1D5C1EF93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD224F8B-0FE8-4716-8B97-01F1D5C1EF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD224F8B-0FE8-4716-8B97-01F1D5C1EF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD224F8B-0FE8-4716-8B97-01F1D5C1EF93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53FB47D8-C133-4FA9-9742-812775A5A239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53FB47D8-C133-4FA9-9742-812775A5A239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53FB47D8-C133-4FA9-9742-812775A5A239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53FB47D8-C133-4FA9-9742-812775A5A239}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{53FB47D8-C133-4FA9-9742-812775A5A239} = {D4C17907-0BEF-46C3-8A21-660811B87E7D}
+	EndGlobalSection
+EndGlobal
