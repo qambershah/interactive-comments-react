@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Comment } from '../types/comment';
-import { removeCommentAndReplies, replaceComment } from '../utils/commentState';
+import { removeCommentAndReplies, replaceComment, sortCommentsByScore } from '../utils/commentState';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -106,7 +106,7 @@ export const useComments = () => {
       });
       if (!response.ok) throw new Error('Failed to vote on comment.');
       const updatedComment = await response.json() as Comment;
-      setComments(current => replaceComment(current, updatedComment));
+      setComments(current => sortCommentsByScore(replaceComment(current, updatedComment)));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to vote.');
     }
