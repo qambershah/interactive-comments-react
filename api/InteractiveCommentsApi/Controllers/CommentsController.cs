@@ -1,6 +1,5 @@
 using InteractiveCommentsApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Encodings.Web;
 using DefaultNamespace;
 using InteractiveCommentsApi.DTOs;
 using InteractiveCommentsApi.Mappers;
@@ -13,12 +12,9 @@ namespace InteractiveCommentsApi.Controllers;
 public class CommentsController : ControllerBase
 {
     private readonly ICommentService _commentService;
-    private readonly HtmlEncoder _htmlEncoder;
-
-    public CommentsController(ICommentService commentService, HtmlEncoder htmlEncoder)
+    public CommentsController(ICommentService commentService)
     {
         _commentService = commentService;
-        _htmlEncoder = htmlEncoder;
     }
 
     /// <summary>
@@ -51,16 +47,8 @@ public class CommentsController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] CreateCommentDto dto)
     {
-        // Sanitize the content to prevent HTML/script injection attacks
-        var sanitizedContent = _htmlEncoder.Encode(dto.Content);
-        var sanitizedDto = new CreateCommentDto
-        {
-            User = dto.User,
-            Content = sanitizedContent,
-            ParentId = dto.ParentId
-        };
         // Use CommentMapper to create Comment entity
-        var comment = CommentMapper.FromCreateDto(sanitizedDto);
+        var comment = CommentMapper.FromCreateDto(dto);
         comment.CreatedAt = DateTime.UtcNow;
         // Add the new comment to the data store via the service
         _commentService.Add(comment);
@@ -79,14 +67,12 @@ public class CommentsController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] UpdateCommentDto dto)
     {
-        // Sanitize the updated content to prevent HTML/script injection
-        var sanitizedContent = _htmlEncoder.Encode(dto.Content);
-
         // Update the comment content via the service
-        var success = _commentService.Update(id, sanitizedContent);
+        var success = _commentService.Update(id, dto.Content);
         if (!success) return NotFound();
-        // Return 204 No Content to indicate successful update without returning data
-        return NoContent();
+        // Return the updated comment so clients can update it without reloading the full thread.
+        var updatedComment = _commentService.GetById(id);
+        return updatedComment is null ? NotFound() : Ok(CommentMapper.ToDto(updatedComment));
     }
 
     /// <summary>
@@ -121,4 +107,3 @@ public class CommentsController : ControllerBase
         return Ok(CommentMapper.ToDto(comment));
     }
 }
-

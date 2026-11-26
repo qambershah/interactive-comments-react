@@ -1,9 +1,7 @@
 ﻿using System.Text.Encodings.Web;
-using AngleSharp.Html.Dom;
 using DefaultNamespace;
 using InteractiveCommentsApi.Services;
 
-// using HtmlSanitizer;
 
 namespace InteractiveCommentsApi;
 
@@ -39,7 +37,6 @@ public class Startup
 
         // Register in-memory comment service
         services.AddSingleton<ICommentService, CommentService>();
-        // services.AddSingleton<HtmlSanitizer>();
         services.AddSingleton(HtmlEncoder.Default);
     }
 

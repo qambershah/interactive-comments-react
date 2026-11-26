@@ -1,106 +1,114 @@
-import { useEffect, useState } from "react";
-import type { Comment } from "../types/comment";
+import { useCallback, useEffect, useState } from 'react';
+import type { Comment } from '../types/comment';
+import { removeCommentAndReplies, replaceComment } from '../utils/commentState';
 
-// const API_URL = "http://localhost:5000/api/Comments";
-const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
+
+function getApiUrl() {
+  const apiUrl = import.meta.env.VITE_API_URL?.trim();
+  if (!apiUrl) {
+    throw new Error('Comments API is not configured. Set VITE_API_URL in your .env file.');
+  }
+
+  return apiUrl.replace(/\/+$/, '');
+}
+
+function getHeaders(includeJson = false): HeadersInit {
+  return {
+    ...(includeJson ? { 'Content-Type': 'application/json' } : {}),
+    ...(API_KEY ? { 'x-api-key': API_KEY } : {}),
+  };
+}
 
 export const useComments = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch comments
-  const fetchComments = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(API_URL, {
-        headers: {
-          "x-api-key": API_KEY
-        }
-      });
-      if (!res.ok) throw new Error("Failed to fetch comments.");
-      const json = await res.json();
-      setComments(json); // Adjust if your API wraps data
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchComments = useCallback(async (signal?: AbortSignal, showLoading = true) => {
+    if (showLoading) setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    fetchComments();
+    try {
+      const response = await fetch(getApiUrl(), {
+        headers: getHeaders(),
+        signal,
+      });
+      if (!response.ok) throw new Error('Failed to fetch comments.');
+      setComments(await response.json() as Comment[]);
+    } catch (err) {
+      if (signal?.aborted) return;
+      setError(err instanceof Error ? err.message : 'Unknown error occurred.');
+    } finally {
+      if (showLoading && !signal?.aborted) setLoading(false);
+    }
   }, []);
 
-  // Add comment/reply
+  useEffect(() => {
+    const controller = new AbortController();
+    void Promise.resolve().then(() => fetchComments(controller.signal, true));
+    return () => controller.abort();
+  }, [fetchComments]);
+
   const addComment = async (newComment: Partial<Comment>) => {
+    setError(null);
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": API_KEY,
-        },
+      const response = await fetch(getApiUrl(), {
+        method: 'POST',
+        headers: getHeaders(true),
         body: JSON.stringify(newComment),
       });
-      if (!res.ok) throw new Error("Failed to add comment.");
-      await fetchComments();
+      if (!response.ok) throw new Error('Failed to add comment.');
+      const createdComment = await response.json() as Comment;
+      setComments(current => [...current, createdComment]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add comment.");
+      setError(err instanceof Error ? err.message : 'Failed to add comment.');
     }
   };
 
-  // Update comment
   const updateComment = async (id: number, updatedContent: string) => {
+    setError(null);
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": API_KEY,
-        },
+      const response = await fetch(`${getApiUrl()}/${id}`, {
+        method: 'PUT',
+        headers: getHeaders(true),
         body: JSON.stringify({ content: updatedContent }),
       });
-      if (!res.ok) throw new Error("Failed to update comment.");
-      await fetchComments();
+      if (!response.ok) throw new Error('Failed to update comment.');
+      const updatedComment = await response.json() as Comment;
+      setComments(current => replaceComment(current, updatedComment));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update comment.");
+      setError(err instanceof Error ? err.message : 'Failed to update comment.');
     }
   };
 
-  // Delete comment
   const deleteComment = async (id: number) => {
+    setError(null);
     try {
-      const res = await fetch(`${API_URL}/${id}`, { 
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": API_KEY,
-        },
+      const response = await fetch(`${getApiUrl()}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders(),
       });
-      if (!res.ok) throw new Error("Failed to delete comment.");
-      await fetchComments();
+      if (!response.ok) throw new Error('Failed to delete comment.');
+      setComments(current => removeCommentAndReplies(current, id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete comment.");
+      setError(err instanceof Error ? err.message : 'Failed to delete comment.');
     }
   };
 
-  // Vote (increment/decrement score)
   const voteComment = async (id: number, delta: number) => {
+    setError(null);
     try {
-      const res = await fetch(`${API_URL}/${id}/vote`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": API_KEY,
-        },
+      const response = await fetch(`${getApiUrl()}/${id}/vote`, {
+        method: 'PATCH',
+        headers: getHeaders(true),
         body: JSON.stringify({ delta }),
       });
-      if (!res.ok) throw new Error("Failed to vote on comment.");
-      await fetchComments();
+      if (!response.ok) throw new Error('Failed to vote on comment.');
+      const updatedComment = await response.json() as Comment;
+      setComments(current => replaceComment(current, updatedComment));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to vote.");
+      setError(err instanceof Error ? err.message : 'Failed to vote.');
     }
   };
 
