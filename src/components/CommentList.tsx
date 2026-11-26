@@ -13,8 +13,12 @@ interface Props {
 export function CommentList({ comments, onReply, onEdit, onDelete, onVote }: Props) {
   const nested = buildCommentTree(comments);
 
+  if (nested.length === 0) {
+    return <p className="empty-state">No comments yet. Start the discussion.</p>;
+  }
+
   return (
-    <div>
+    <ol className="comment-list" aria-label="Comment thread">
       {nested.map((comment) => (
         <CommentItem
           key={comment.id}
@@ -25,6 +29,6 @@ export function CommentList({ comments, onReply, onEdit, onDelete, onVote }: Pro
           onVote={onVote}
         />
       ))}
-    </div>
+    </ol>
   );
 }
