@@ -70,8 +70,9 @@ public class CommentsController : ControllerBase
         // Update the comment content via the service
         var success = _commentService.Update(id, dto.Content);
         if (!success) return NotFound();
-        // Return 204 No Content to indicate successful update without returning data
-        return NoContent();
+        // Return the updated comment so clients can update it without reloading the full thread.
+        var updatedComment = _commentService.GetById(id);
+        return updatedComment is null ? NotFound() : Ok(CommentMapper.ToDto(updatedComment));
     }
 
     /// <summary>

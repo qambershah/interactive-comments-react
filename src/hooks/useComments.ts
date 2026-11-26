@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Comment } from '../types/comment';
+import { removeCommentAndReplies, replaceComment } from '../utils/commentState';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -24,8 +25,8 @@ export const useComments = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchComments = useCallback(async (signal?: AbortSignal) => {
-    setLoading(true);
+  const fetchComments = useCallback(async (signal?: AbortSignal, showLoading = true) => {
+    if (showLoading) setLoading(true);
     setError(null);
 
     try {
@@ -39,13 +40,13 @@ export const useComments = () => {
       if (signal?.aborted) return;
       setError(err instanceof Error ? err.message : 'Unknown error occurred.');
     } finally {
-      if (!signal?.aborted) setLoading(false);
+      if (showLoading && !signal?.aborted) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     const controller = new AbortController();
-    void Promise.resolve().then(() => fetchComments(controller.signal));
+    void Promise.resolve().then(() => fetchComments(controller.signal, true));
     return () => controller.abort();
   }, [fetchComments]);
 
@@ -58,7 +59,8 @@ export const useComments = () => {
         body: JSON.stringify(newComment),
       });
       if (!response.ok) throw new Error('Failed to add comment.');
-      await fetchComments();
+      const createdComment = await response.json() as Comment;
+      setComments(current => [...current, createdComment]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add comment.');
     }
@@ -73,7 +75,8 @@ export const useComments = () => {
         body: JSON.stringify({ content: updatedContent }),
       });
       if (!response.ok) throw new Error('Failed to update comment.');
-      await fetchComments();
+      const updatedComment = await response.json() as Comment;
+      setComments(current => replaceComment(current, updatedComment));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update comment.');
     }
@@ -87,7 +90,7 @@ export const useComments = () => {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error('Failed to delete comment.');
-      await fetchComments();
+      setComments(current => removeCommentAndReplies(current, id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete comment.');
     }
@@ -102,7 +105,8 @@ export const useComments = () => {
         body: JSON.stringify({ delta }),
       });
       if (!response.ok) throw new Error('Failed to vote on comment.');
-      await fetchComments();
+      const updatedComment = await response.json() as Comment;
+      setComments(current => replaceComment(current, updatedComment));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to vote.');
     }

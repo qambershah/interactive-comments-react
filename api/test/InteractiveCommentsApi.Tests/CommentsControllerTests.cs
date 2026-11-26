@@ -38,9 +38,10 @@ public class CommentsControllerTests
         service.Add(NewComment("Original"));
         var controller = new CommentsController(service);
 
-        var result = controller.Put(1, new UpdateCommentDto { Content = "<i>Updated</i>" });
+        var result = Assert.IsType<OkObjectResult>(controller.Put(1, new UpdateCommentDto { Content = "<i>Updated</i>" }));
 
-        Assert.IsType<NoContentResult>(result);
+        var response = Assert.IsType<CommentDto>(result.Value);
+        Assert.Equal("&lt;i&gt;Updated&lt;/i&gt;", response.Content);
         Assert.Equal("&lt;i&gt;Updated&lt;/i&gt;", service.GetById(1)?.Content);
     }
 
