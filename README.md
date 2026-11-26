@@ -1,79 +1,59 @@
-# 💬 Interactive Comments – Full-Stack Serverless App (React + .NET + AWS)
+# Interactive Comments
 
-A modern threaded comment system:
+A threaded comment demo with a React and TypeScript frontend and an ASP.NET Core API. The frontend is configured for GitHub Pages; the API project can be run locally or deployed separately.
 
-* **Frontend** – React 19 + TypeScript (Vite) — hosted on **GitHub Pages**  
-* **Backend** – .NET 8 REST API running on **AWS Lambda** behind **API Gateway**  
-* **Infra** – Deployed with the .NET Lambda CLI + API‑key Usage Plan for rate‑limiting
+## Features
 
----
+- Create comments and nested replies
+- Edit and delete comments shown as belonging to the demo user
+- Upvote and downvote comments
+- Encode comment text on the API before returning it
+- Keep comments in process memory
 
-## 🚀 Features
+## Stack
 
-| Area | Details |
-|------|---------|
-| 📝 Comments | Add, reply (nested), edit, delete (auth‑guarded to current user) |
-| 📊 Voting    | Up‑vote / down‑vote, list auto‑sorted by score |
-| 🔑 Protection | API key + API Gateway usage‑plan throttling (burst 5 rps / 1000 req‑day) |
-| 🗄️ Persistence | In‑memory seed from `Seed/comments.json` (persists while Lambda is warm) |
-| 🌐 CORS | Cross‑origin allowed for `https://qambershah.github.io` |
-| 🛡️ XSS Safe | Comment body sanitised server‑side with `HtmlEncoder` |
-| 📜 OpenAPI | Swagger UI available locally at `/swagger` |
-| ⚙️ CI/CD | React auto-deploys to GitHub Pages via Actions; Lambda deployed via CLI (CI/CD pending) |
+- React 19.3, TypeScript, and Vite 8
+- ASP.NET Core / .NET 10 Web API
+- AWS Lambda and API Gateway deployment files
+- GitHub Actions workflow for the frontend
 
----
+## Run locally
 
-## 🔧 Tech Stack
+Install Node.js 22 and the .NET 10 SDK. From the repository root, install dependencies and configure the frontend:
 
-| Layer    | Tech |
-|----------|------|
-| Frontend | React 19 • TypeScript • Vite |
-| Backend  | .NET 8 Minimal API |
-| Cloud    | AWS Lambda • API Gateway (REST API) • IAM |
-| Dev Tools| AWS Lambda .NET CLI • GitHub Actions |
-
----
-
-## 🧑‍💻 Local Development
-
-```bash
-# clone
-git clone https://github.com/qambershah/interactive-comments-react.git
-cd interactive-comments-react
-
-# 1️⃣ Frontend
-cp .env   # then set variables
-npm install
-npm run dev                  # Vite dev server
-
-# 2️⃣ Backend (.NET 8)
-cd api/InteractiveCommentsApi
-dotnet run                   # runs on http://localhost:5000
+```sh
+cp .env.example .env
+npm ci
+npm run dev
 ```
 
-> **ENV** – Frontend reads `VITE_API_URL` & `VITE_API_KEY` from `.env`.
+Set `VITE_API_URL` in `.env` to the API's comments endpoint. `VITE_API_KEY` can be set if the API Gateway deployment requires a usage-plan key. The frontend will need the API's CORS policy to allow the Vite origin.
 
----
+Run the API from `api/InteractiveCommentsApi` with `dotnet run`. Use the URL printed by ASP.NET Core as the API host and append `/api/Comments`.
 
-## 🌍 Live Demo
+## Checks
 
-[🔗 Live Demo on GitHub Pages](https://qambershah.github.io/interactive-comments-react/)
+Run the frontend tests, lint, and production build from the repository root. Run the API test suite from the repository root:
 
----
-
-## 🚚 Deploy (Auto via GitHub Actions)
-
-GitHub Actions is configured to auto-deploy `dist/` to the `gh-pages` branch on every `main` branch push.
-
-Ensure `vite.config.ts` has:
-```ts
-base: '/interactive-comments-react/'
+```sh
+npm test
+npm run lint
+npm run build
+dotnet test api/InteractiveComments.sln
 ```
----
 
-## 📝 License
+## Checks and deployment
+
+Pull requests targeting `main` run the API tests, frontend tests, lint, and frontend production build. After changes are merged to `main`, the deployment workflow reruns those checks and publishes the Vite output to GitHub Pages.
+
+The Vite app uses `/interactive-comments-react/` as its base path for GitHub Pages. Set the repository variables `VITE_API_URL` and, if required, `VITE_API_KEY` so the workflow can include them in the frontend build. Values prefixed with `VITE_` are public in the browser bundle; do not put secrets there. Set the repository's Pages publishing source to **GitHub Actions**. The API is deployed separately using the AWS Lambda tooling; the frontend workflow does not deploy it.
+
+## Demo limitations
+
+The current user is hard-coded as `yoda`. Edit and delete controls are shown by comparing that username with the comment's username; this is a UI convenience, not authentication or authorization. The API accepts the user supplied by the client, so do not use this demo to store private or trusted user content.
+
+Comments live in process memory and can disappear when the API process or Lambda execution environment restarts. The API Gateway usage-plan key is sent by the browser, so it is visible to visitors and should be treated as a rate-limiting identifier, never as a secret. There is no real-time sync; the frontend reloads the comments after its own mutations.
+
+## License
+
 MIT
-
----
-
-Feel free to fork and adapt this for your own comment/chat systems!
