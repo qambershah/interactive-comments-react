@@ -15,12 +15,6 @@ export function replaceComment(comments: Comment[], updatedComment: Comment): Co
   return found ? updatedComments : [...comments, updatedComment];
 }
 
-export function sortCommentsByScore(comments: Comment[]): Comment[] {
-  return comments
-    .map(comment => ({ ...comment, replies: sortCommentsByScore(comment.replies ?? []) }))
-    .sort((first, second) => second.score - first.score);
-}
-
 export function removeCommentAndReplies(comments: Comment[], id: number): Comment[] {
   const removedIds = new Set<number>([id]);
   let foundDescendant = true;
