@@ -19,7 +19,7 @@ A threaded comment demo with a React and TypeScript frontend and an ASP.NET Core
 
 ## Run locally
 
-Install Node.js 22 and the .NET 10 SDK. From the repository root, install dependencies and configure the frontend:
+Install Node.js 26 LTS and the .NET 10 SDK. The `.nvmrc` file sets the Node.js major version used by local development and GitHub Actions. From the repository root, install dependencies and configure the frontend:
 
 ```sh
 cp .env.example .env
