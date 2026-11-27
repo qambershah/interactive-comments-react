@@ -1,4 +1,3 @@
-using System.Text.Encodings.Web;
 using DefaultNamespace;
 using InteractiveCommentsApi.Controllers;
 using InteractiveCommentsApi.DTOs;
@@ -14,35 +13,42 @@ namespace InteractiveCommentsApi.Tests;
 public class CommentsControllerTests
 {
     [Fact]
-    public void Post_EncodesCommentContentOnce()
+    public void Post_StoresContentAsWritten()
     {
         var service = CreateService();
         var controller = new CommentsController(service);
         var request = new CreateCommentDto
         {
-            Content = "<b>Hello</b>",
+            Content = "<b>Hello</b> — it's \"fine\" & done",
             User = new UserDto { Username = "tester", Image = "/avatar.png" }
         };
 
         var result = Assert.IsType<CreatedAtActionResult>(controller.Post(request));
         var response = Assert.IsType<CommentDto>(result.Value);
 
-        Assert.Equal("&lt;b&gt;Hello&lt;/b&gt;", response.Content);
-        Assert.Equal(response.Content, service.GetById(response.Id)?.Content);
+        Assert.Equal(request.Content, response.Content);
+        Assert.Equal(request.Content, service.GetById(response.Id)?.Content);
     }
 
     [Fact]
-    public void Put_UpdatesCommentAndEncodesContentOnce()
+    public void Put_RepeatedEditsDoNotChangeTheText()
     {
+        // Regression: content was HTML-encoded on every save, so "—" became "&#x2014;"
+        // and then "&amp;#x2014;" as the same text was edited again.
+        const string text = "Hooks, signals, server rendering — master them & <share> what you learn.";
         var service = CreateService();
         service.Add(NewComment("Original"));
         var controller = new CommentsController(service);
 
-        var result = Assert.IsType<OkObjectResult>(controller.Put(1, new UpdateCommentDto { Content = "<i>Updated</i>" }));
+        for (var i = 0; i < 3; i++)
+        {
+            var current = service.GetById(1)!.Content;
+            controller.Put(1, new UpdateCommentDto { Content = i == 0 ? text : current });
+        }
 
-        var response = Assert.IsType<CommentDto>(result.Value);
-        Assert.Equal("&lt;i&gt;Updated&lt;/i&gt;", response.Content);
-        Assert.Equal("&lt;i&gt;Updated&lt;/i&gt;", service.GetById(1)?.Content);
+        var result = Assert.IsType<OkObjectResult>(controller.Put(1, new UpdateCommentDto { Content = text }));
+        Assert.Equal(text, Assert.IsType<CommentDto>(result.Value).Content);
+        Assert.Equal(text, service.GetById(1)?.Content);
     }
 
     [Fact]
@@ -89,7 +95,7 @@ public class CommentsControllerTests
             ContentRootPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"))
         };
 
-        return new CommentService(HtmlEncoder.Default, environment);
+        return new CommentService(environment);
     }
 
     private static Comment NewComment(string content, int? parentId = null) => new()

@@ -1,5 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using InteractiveCommentsApi.Services;
 
 
@@ -37,7 +36,6 @@ public class Startup
 
         // Register in-memory comment service
         services.AddSingleton<ICommentService, CommentService>();
-        services.AddSingleton(HtmlEncoder.Default);
     }
 
     /// <summary>
