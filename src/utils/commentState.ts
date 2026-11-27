@@ -15,6 +15,12 @@ export function replaceComment(comments: Comment[], updatedComment: Comment): Co
   return found ? updatedComments : [...comments, updatedComment];
 }
 
+export function updateCommentContent(comments: Comment[], id: number, content: string): Comment[] {
+  return comments.map(comment => comment.id === id
+    ? { ...comment, content }
+    : { ...comment, replies: updateCommentContent(comment.replies ?? [], id, content) });
+}
+
 export function removeCommentAndReplies(comments: Comment[], id: number): Comment[] {
   const removedIds = new Set<number>([id]);
   let foundDescendant = true;
