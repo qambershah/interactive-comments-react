@@ -1,4 +1,3 @@
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using DefaultNamespace;
 using InteractiveCommentsApi.Models;
@@ -8,13 +7,12 @@ namespace InteractiveCommentsApi.Services;
 public class CommentService : ICommentService
 {
     private readonly List<Comment> _comments = new();
-    private readonly HtmlEncoder _htmlEncoder;
     private readonly object _lock = new();
 
-    public CommentService(HtmlEncoder htmlEncoder, IWebHostEnvironment env)
+    // Content is stored exactly as written. Escaping belongs where text is rendered:
+    // the React client escapes it when displaying, so encoding here would double-encode.
+    public CommentService(IWebHostEnvironment env)
     {
-        _htmlEncoder = htmlEncoder;
-        
         var jsonPath = Path.Combine(env.ContentRootPath, "Seed", "comments.json");
         if (File.Exists(jsonPath))
         {
@@ -62,8 +60,6 @@ public class CommentService : ICommentService
         if (string.IsNullOrWhiteSpace(comment.Content))
             throw new ArgumentException("Content cannot be empty.");
 
-        comment.Content = _htmlEncoder.Encode(comment.Content);
-
         lock (_lock)
         {
             // Simple Id generation (you might want to use a better approach)
@@ -79,7 +75,7 @@ public class CommentService : ICommentService
             var comment = GetById(id);
             if (comment != null)
             {
-                comment.Content = _htmlEncoder.Encode(newContent);
+                comment.Content = newContent;
                 return true;
             }
             return false;

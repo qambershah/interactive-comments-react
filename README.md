@@ -7,7 +7,7 @@ A threaded comment demo with a React and TypeScript frontend and an ASP.NET Core
 - Create comments and nested replies
 - Edit and delete comments shown as belonging to the demo user
 - Upvote and downvote comments
-- Encode comment text on the API before returning it
+- Store comment text as written; the React client escapes it when rendering
 - Keep comments in process memory
 
 ## Stack
