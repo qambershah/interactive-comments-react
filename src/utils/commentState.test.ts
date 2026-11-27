@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Comment } from '../types/comment';
-import { removeCommentAndReplies, replaceComment } from './commentState';
+import { removeCommentAndReplies, replaceComment, updateCommentContent } from './commentState';
 
 const comment = (id: number, parentId: number | null, content: string, replies: Comment[] = []): Comment => ({
   id,
@@ -13,6 +13,18 @@ const comment = (id: number, parentId: number | null, content: string, replies: 
 });
 
 describe('comment state updates', () => {
+  it('updates nested comment content in place when the API returns no body', () => {
+    const reply = comment(2, 1, 'Reply', [comment(4, 2, 'Deep')]);
+    const comments = [comment(1, null, 'Parent', [reply]), comment(3, null, 'Other')];
+
+    const result = updateCommentContent(comments, 2, 'Edited reply');
+
+    expect(result[0]?.replies[0]?.content).toBe('Edited reply');
+    expect(result[0]?.replies[0]?.replies[0]?.content).toBe('Deep');
+    expect(result[1]?.content).toBe('Other');
+    expect(comments[0]?.replies[0]?.content).toBe('Reply');
+  });
+
   it('replaces one nested comment while keeping its replies and other comments', () => {
     const reply = comment(2, 1, 'Reply');
     const comments = [comment(1, null, 'Parent', [reply]), comment(3, null, 'Other')];
